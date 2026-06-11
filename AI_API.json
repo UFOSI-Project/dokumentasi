@@ -1,0 +1,222 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OCR",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "summary": "health",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        },
+        "operationId": "health"
+      }
+    },
+    "/api/v1/extract": {
+      "post": {
+        "summary": "extract",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        },
+        "operationId": "extract",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "example": ""
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/detect-anomalies": {
+      "post": {
+        "summary": "detect anomalies",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        },
+        "operationId": "detect_anomalies"
+      }
+    },
+    "/api/v1/redact": {
+      "post": {
+        "summary": "redact (testing purposes only)",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        },
+        "operationId": "redact_testing_purposes_only"
+      }
+    },
+    "/api/v1/redact-preview": {
+      "post": {
+        "summary": "redact preview bank arunika",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        },
+        "operationId": "redact_preview_bank_arunika",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "redaction_config": {
+                    "type": "string",
+                    "example": "{  \"header_region\": { \"y_start\": 85, \"y_end\": 200 },  \"column_regions\": [    { \"x_start\": 82, \"x_end\": 365, \"label\": \"uraian_dan_channel\" }  ]}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000"
+    }
+  ],
+  "x-hoppscotch-dropped-requests": [
+    {
+      "tagPath": null,
+      "request": {
+        "v": "17",
+        "auth": {
+          "authType": "none",
+          "authActive": true
+        },
+        "body": {
+          "body": [
+            {
+              "key": "file",
+              "value": "",
+              "active": true,
+              "isFile": true
+            },
+            {
+              "key": "redaction_config",
+              "value": "{  \"header_region\": { \"y_start\": 85, \"y_end\": 200 },  \"column_regions\": [    { \"x_start\": 82, \"x_end\": 365, \"label\": \"uraian_dan_channel\" }  ]}",
+              "active": true,
+              "isFile": false
+            }
+          ],
+          "contentType": "multipart/form-data"
+        },
+        "name": "extract bank arunika",
+        "method": "POST",
+        "params": [],
+        "_ref_id": "req_mq3r4sva_f8e30667-a55d-4dc3-bcad-2a7018ae883c",
+        "headers": [],
+        "endpoint": "<<base_url>>/api/v1/extract",
+        "responses": {},
+        "testScript": "",
+        "description": null,
+        "preRequestScript": "",
+        "requestVariables": [],
+        "id": "cmq3r4tb802q0fw1m6j8clyg4"
+      }
+    },
+    {
+      "tagPath": null,
+      "request": {
+        "v": "17",
+        "auth": {
+          "authType": "none",
+          "authActive": true
+        },
+        "body": {
+          "body": [
+            {
+              "key": "file",
+              "value": "",
+              "active": true,
+              "isFile": true
+            },
+            {
+              "key": "redaction_config",
+              "value": "{  \"header_region\": { \"y_start\": 85, \"y_end\": 200 },  \"column_regions\": [    { \"x_start\": 78, \"x_end\": 388, \"label\": \"cabang_kategori_deskripsi\" }  ]}",
+              "active": true,
+              "isFile": false
+            }
+          ],
+          "contentType": "multipart/form-data"
+        },
+        "name": "extract bank kencana",
+        "method": "POST",
+        "params": [],
+        "_ref_id": "req_mq3rtjbl_0ae6774c-079d-4c4b-9c37-8b14fdf4e5c7",
+        "headers": [],
+        "endpoint": "<<base_url>>/api/v1/extract",
+        "responses": {},
+        "testScript": "",
+        "description": null,
+        "preRequestScript": "",
+        "requestVariables": [],
+        "id": "cmq3rtjv302q3fw1mlzg6zvl0"
+      }
+    },
+    {
+      "tagPath": null,
+      "request": {
+        "v": "17",
+        "auth": {
+          "authType": "none",
+          "authActive": true
+        },
+        "body": {
+          "body": [
+            {
+              "key": "file",
+              "value": "",
+              "active": true,
+              "isFile": true
+            },
+            {
+              "key": "redaction_config",
+              "value": "{  \"header_region\": { \"y_start\": 85, \"y_end\": 200 },  \"column_regions\": [    { \"x_start\": 82, \"x_end\": 333, \"label\": \"keterangan_dan_referensi\" },    { \"x_start\": 455, \"x_end\": 508, \"label\": \"adm_fee\" }  ]}",
+              "active": true,
+              "isFile": false
+            }
+          ],
+          "contentType": "multipart/form-data"
+        },
+        "name": "extract bank nusa",
+        "method": "POST",
+        "params": [],
+        "_ref_id": "req_mq3ruu6q_76bdeaa0-25ac-4f61-a769-4684d8d40b67",
+        "headers": [],
+        "endpoint": "<<base_url>>/api/v1/extract",
+        "responses": {},
+        "testScript": "",
+        "description": null,
+        "preRequestScript": "",
+        "requestVariables": [],
+        "id": "cmq3ruumh02q4fw1mzqctu7li"
+      }
+    }
+  ]
+}
