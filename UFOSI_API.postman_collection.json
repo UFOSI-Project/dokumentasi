@@ -1,0 +1,914 @@
+{
+  "info": {
+    "name": "UFOSI API",
+    "description": "Complete API collection for UFOSI (BSI Branch Growth Hub) backend. Base URL: http://localhost:8080/api/v1\n\nSetup:\n1. Set variable `baseUrl` = http://localhost:8080/api/v1\n2. Login via Auth > Login, then copy `accessToken` from response\n3. Set variable `token` = <accessToken value>\n4. All protected endpoints use Bearer {{token}} automatically",
+    "_postman_id": "ufosi-api-collection-v1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080/api/v1", "type": "string" },
+    { "key": "token", "value": "", "type": "string" },
+    { "key": "refreshToken", "value": "", "type": "string" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Root Health",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:8080/health", "host": ["http://localhost:8080"], "path": ["health"] },
+            "auth": { "type": "noauth" }
+          }
+        },
+        {
+          "name": "API Health",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"] },
+            "auth": { "type": "noauth" }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nip\": \"12345678\",\n  \"nama\": \"Andira Mahendra\",\n  \"email\": \"andira@example.com\",\n  \"password\": \"Password1\",\n  \"confirmPassword\": \"Password1\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.accessToken) {",
+                  "  pm.collectionVariables.set('token', json.data.accessToken);",
+                  "  pm.collectionVariables.set('refreshToken', json.data.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@ufosi.id\",\n  \"password\": \"Admin123\",\n  \"rememberMe\": false\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/refresh", "host": ["{{baseUrl}}"], "path": ["auth", "refresh"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/logout", "host": ["{{baseUrl}}"], "path": ["auth", "logout"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/forgot-password", "host": ["{{baseUrl}}"], "path": ["auth", "forgot-password"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"andira@example.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/reset-password", "host": ["{{baseUrl}}"], "path": ["auth", "reset-password"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"<reset-token-from-email>\",\n  \"password\": \"NewPassword1\",\n  \"confirmPassword\": \"NewPassword1\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/users/profile", "host": ["{{baseUrl}}"], "path": ["users", "profile"] }
+          }
+        },
+        {
+          "name": "Update My Profile",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/users/profile", "host": ["{{baseUrl}}"], "path": ["users", "profile"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Andira Mahendra S\",\n  \"email\": \"andira.new@example.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/users/profile/change-password", "host": ["{{baseUrl}}"], "path": ["users", "profile", "change-password"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"Password1\",\n  \"newPassword\": \"NewPassword1\",\n  \"confirmPassword\": \"NewPassword1\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Get All Users",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/users?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["users"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "10" }] }
+          }
+        },
+        {
+          "name": "[ADMIN] Get User by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/users/:id", "host": ["{{baseUrl}}"], "path": ["users", ":id"], "variable": [{ "key": "id", "value": "<user-uuid>" }] }
+          }
+        },
+        {
+          "name": "[ADMIN] Create User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nip\": \"98765432\",\n  \"nama\": \"User Baru\",\n  \"email\": \"userbaru@example.com\",\n  \"password\": \"Password1\",\n  \"role\": \"USER\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Update User",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/users/:id", "host": ["{{baseUrl}}"], "path": ["users", ":id"], "variable": [{ "key": "id", "value": "<user-uuid>" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Nama Diperbarui\",\n  \"role\": \"ADMIN\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Update User Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/users/:id/status", "host": ["{{baseUrl}}"], "path": ["users", ":id", "status"], "variable": [{ "key": "id", "value": "<user-uuid>" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": false\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Delete User",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/users/:id", "host": ["{{baseUrl}}"], "path": ["users", ":id"], "variable": [{ "key": "id", "value": "<user-uuid>" }] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Banks",
+      "item": [
+        {
+          "name": "Get All Banks",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/banks", "host": ["{{baseUrl}}"], "path": ["banks"] }
+          }
+        },
+        {
+          "name": "Get Bank by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/banks/:id", "host": ["{{baseUrl}}"], "path": ["banks", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+          }
+        },
+        {
+          "name": "[ADMIN] Create Bank",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/banks", "host": ["{{baseUrl}}"], "path": ["banks"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Bank Syariah Mandiri\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Update Bank",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/banks/:id", "host": ["{{baseUrl}}"], "path": ["banks", ":id"], "variable": [{ "key": "id", "value": "1" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Bank Syariah Indonesia\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Delete Bank",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/banks/:id", "host": ["{{baseUrl}}"], "path": ["banks", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Nasabah",
+      "item": [
+        {
+          "name": "Get All Nasabah",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/nasabah?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["nasabah"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "10" }] }
+          }
+        },
+        {
+          "name": "Get Nasabah by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/nasabah/:id", "host": ["{{baseUrl}}"], "path": ["nasabah", ":id"], "variable": [{ "key": "id", "value": "<uuid>" }] }
+          }
+        },
+        {
+          "name": "Create Nasabah",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/nasabah", "host": ["{{baseUrl}}"], "path": ["nasabah"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Ahmad Fauzi\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Update Nasabah",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/nasabah/:id", "host": ["{{baseUrl}}"], "path": ["nasabah", ":id"], "variable": [{ "key": "id", "value": "<uuid>" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Ahmad Fauzi Diperbarui\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Delete Nasabah",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/nasabah/:id", "host": ["{{baseUrl}}"], "path": ["nasabah", ":id"], "variable": [{ "key": "id", "value": "<uuid>" }] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Jenis Pembiayaan",
+      "item": [
+        {
+          "name": "Get All Jenis Pembiayaan",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/jenis-pembiayaan", "host": ["{{baseUrl}}"], "path": ["jenis-pembiayaan"] }
+          }
+        },
+        {
+          "name": "Get Jenis Pembiayaan by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/jenis-pembiayaan/:id", "host": ["{{baseUrl}}"], "path": ["jenis-pembiayaan", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+          }
+        },
+        {
+          "name": "[ADMIN] Create Jenis Pembiayaan",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/jenis-pembiayaan", "host": ["{{baseUrl}}"], "path": ["jenis-pembiayaan"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Murabahah\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Update Jenis Pembiayaan",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/jenis-pembiayaan/:id", "host": ["{{baseUrl}}"], "path": ["jenis-pembiayaan", ":id"], "variable": [{ "key": "id", "value": "1" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Musyarakah\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Delete Jenis Pembiayaan",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/jenis-pembiayaan/:id", "host": ["{{baseUrl}}"], "path": ["jenis-pembiayaan", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Konfigurasi Rekening Koran",
+      "item": [
+        {
+          "name": "[ADMIN] Get All Konfigurasi",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/konfigurasi", "host": ["{{baseUrl}}"], "path": ["konfigurasi"] }
+          }
+        },
+        {
+          "name": "[ADMIN] Get Konfigurasi by Bank ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/konfigurasi/bank/:bankId", "host": ["{{baseUrl}}"], "path": ["konfigurasi", "bank", ":bankId"], "variable": [{ "key": "bankId", "value": "1" }] }
+          }
+        },
+        {
+          "name": "[ADMIN] Get Konfigurasi by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/konfigurasi/:id", "host": ["{{baseUrl}}"], "path": ["konfigurasi", ":id"], "variable": [{ "key": "id", "value": "<uuid>" }] }
+          }
+        },
+        {
+          "name": "[ADMIN] Create Konfigurasi",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/konfigurasi", "host": ["{{baseUrl}}"], "path": ["konfigurasi"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bankId\": 1,\n  \"detailRedaksi\": 200\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Update Konfigurasi",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/konfigurasi/:id", "host": ["{{baseUrl}}"], "path": ["konfigurasi", ":id"], "variable": [{ "key": "id", "value": "<uuid>" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"detailRedaksi\": 250\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Delete Konfigurasi",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/konfigurasi/:id", "host": ["{{baseUrl}}"], "path": ["konfigurasi", ":id"], "variable": [{ "key": "id", "value": "<uuid>" }] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "OCR / Financing Suite",
+      "item": [
+        {
+          "name": "Extract (OCR via Gemini)",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/ocr/extract", "host": ["{{baseUrl}}"], "path": ["ocr", "extract"] },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "", "description": "PDF rekening koran (max 50MB)" },
+                { "key": "nama", "value": "Ahmad Fauzi", "type": "text", "description": "Nama nasabah (opsional)" },
+                { "key": "bankId", "value": "1", "type": "text", "description": "ID bank (opsional)" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Session Transactions",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/ocr/transactions?page=1&limit=20", "host": ["{{baseUrl}}"], "path": ["ocr", "transactions"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "20" }] }
+          }
+        },
+        {
+          "name": "Patch Transaction",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/ocr/transactions/:id", "host": ["{{baseUrl}}"], "path": ["ocr", "transactions", ":id"], "variable": [{ "key": "id", "value": "<uuid>" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"debit\": 500000,\n  \"kredit\": 0,\n  \"deskripsi\": \"Transfer keluar\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Delete Transaction",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/ocr/transactions/:id", "host": ["{{baseUrl}}"], "path": ["ocr", "transactions", ":id"], "variable": [{ "key": "id", "value": "<uuid>" }] }
+          }
+        },
+        {
+          "name": "Analyze Session",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/ocr/sessions/:sessionId/analyze", "host": ["{{baseUrl}}"], "path": ["ocr", "sessions", ":sessionId", "analyze"], "variable": [{ "key": "sessionId", "value": "<uuid>" }] }
+          }
+        },
+        {
+          "name": "Download Session Report",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/ocr/sessions/:sessionId/report", "host": ["{{baseUrl}}"], "path": ["ocr", "sessions", ":sessionId", "report"], "variable": [{ "key": "sessionId", "value": "<uuid>" }] }
+          }
+        },
+        {
+          "name": "Get All Documents",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/ocr/documents?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["ocr", "documents"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "10" }] }
+          }
+        },
+        {
+          "name": "Get Document by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/ocr/documents/:id", "host": ["{{baseUrl}}"], "path": ["ocr", "documents", ":id"], "variable": [{ "key": "id", "value": "<uuid>" }] }
+          }
+        },
+        {
+          "name": "Upload Document (manual)",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/ocr/documents", "host": ["{{baseUrl}}"], "path": ["ocr", "documents"] },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "", "description": "PDF rekening koran" },
+                { "key": "nasabahId", "value": "<uuid>", "type": "text" },
+                { "key": "jenisPembiayaanId", "value": "1", "type": "text" },
+                { "key": "bankId", "value": "1", "type": "text" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Document",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/ocr/documents/:id", "host": ["{{baseUrl}}"], "path": ["ocr", "documents", ":id"], "variable": [{ "key": "id", "value": "<uuid>" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bankId\": 2\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Delete Document",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/ocr/documents/:id", "host": ["{{baseUrl}}"], "path": ["ocr", "documents", ":id"], "variable": [{ "key": "id", "value": "<uuid>" }] }
+          }
+        },
+        {
+          "name": "Get Transactions by Document",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/ocr/documents/:id/transactions?page=1&limit=20", "host": ["{{baseUrl}}"], "path": ["ocr", "documents", ":id", "transactions"], "variable": [{ "key": "id", "value": "<uuid>" }], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "20" }] }
+          }
+        },
+        {
+          "name": "Create Transaction (manual)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/ocr/documents/:id/transactions", "host": ["{{baseUrl}}"], "path": ["ocr", "documents", ":id", "transactions"], "variable": [{ "key": "id", "value": "<uuid>" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"urutan\": 1,\n  \"debit\": 1500000,\n  \"kredit\": 0,\n  \"saldo\": 8500000,\n  \"waktuTransaksi\": \"2026-01-15T08:30:00.000Z\",\n  \"deskripsi\": \"Pembayaran cicilan\",\n  \"kategori\": \"Cicilan\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Update Transaction",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/ocr/documents/:id/transactions/:txId", "host": ["{{baseUrl}}"], "path": ["ocr", "documents", ":id", "transactions", ":txId"], "variable": [{ "key": "id", "value": "<uuid>" }, { "key": "txId", "value": "<uuid>" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deskripsi\": \"Pembayaran cicilan KPR\",\n  \"kategori\": \"KPR\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Delete Transaction from Document",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/ocr/documents/:id/transactions/:txId", "host": ["{{baseUrl}}"], "path": ["ocr", "documents", ":id", "transactions", ":txId"], "variable": [{ "key": "id", "value": "<uuid>" }, { "key": "txId", "value": "<uuid>" }] }
+          }
+        },
+        {
+          "name": "Run Analysis (per Document)",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/ocr/documents/:id/analyze", "host": ["{{baseUrl}}"], "path": ["ocr", "documents", ":id", "analyze"], "variable": [{ "key": "id", "value": "<uuid>" }] }
+          }
+        },
+        {
+          "name": "Get Analysis Result",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/ocr/documents/:id/analysis", "host": ["{{baseUrl}}"], "path": ["ocr", "documents", ":id", "analysis"], "variable": [{ "key": "id", "value": "<uuid>" }] }
+          }
+        },
+        {
+          "name": "Export CSV",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/ocr/documents/:id/export", "host": ["{{baseUrl}}"], "path": ["ocr", "documents", ":id", "export"], "variable": [{ "key": "id", "value": "<uuid>" }] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Get Summary",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/analytics/summary", "host": ["{{baseUrl}}"], "path": ["analytics", "summary"] }
+          }
+        },
+        {
+          "name": "Get Cashflow",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/analytics/cashflow?year=2026", "host": ["{{baseUrl}}"], "path": ["analytics", "cashflow"], "query": [{ "key": "year", "value": "2026" }] }
+          }
+        },
+        {
+          "name": "Get Distribution",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/analytics/distribution", "host": ["{{baseUrl}}"], "path": ["analytics", "distribution"] }
+          }
+        },
+        {
+          "name": "Get Insights",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/analytics/insights", "host": ["{{baseUrl}}"], "path": ["analytics", "insights"] }
+          }
+        },
+        {
+          "name": "Get Recent Documents",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/analytics/recent-documents", "host": ["{{baseUrl}}"], "path": ["analytics", "recent-documents"] }
+          }
+        },
+        {
+          "name": "Analyze Document",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/analytics/analyze/:dokumenId", "host": ["{{baseUrl}}"], "path": ["analytics", "analyze", ":dokumenId"], "variable": [{ "key": "dokumenId", "value": "<uuid>" }] }
+          }
+        },
+        {
+          "name": "Detect Anomalies",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/analytics/detect-anomalies/:dokumenId", "host": ["{{baseUrl}}"], "path": ["analytics", "detect-anomalies", ":dokumenId"], "variable": [{ "key": "dokumenId", "value": "<uuid>" }] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Anomaly",
+      "item": [
+        {
+          "name": "Get All Jenis Anomali",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/anomaly/jenis", "host": ["{{baseUrl}}"], "path": ["anomaly", "jenis"] }
+          }
+        },
+        {
+          "name": "[ADMIN] Create Jenis Anomali",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/anomaly/jenis", "host": ["{{baseUrl}}"], "path": ["anomaly", "jenis"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Transaksi Tidak Wajar\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Update Jenis Anomali",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/anomaly/jenis/:id", "host": ["{{baseUrl}}"], "path": ["anomaly", "jenis", ":id"], "variable": [{ "key": "id", "value": "<uuid>" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Transaksi Mencurigakan\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Delete Jenis Anomali",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/anomaly/jenis/:id", "host": ["{{baseUrl}}"], "path": ["anomaly", "jenis", ":id"], "variable": [{ "key": "id", "value": "<uuid>" }] }
+          }
+        },
+        {
+          "name": "Get Anomaly by Document",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/anomaly/documents/:dokumenId", "host": ["{{baseUrl}}"], "path": ["anomaly", "documents", ":dokumenId"], "variable": [{ "key": "dokumenId", "value": "<uuid>" }] }
+          }
+        },
+        {
+          "name": "Detect Anomaly (per Document)",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/anomaly/documents/:dokumenId/detect", "host": ["{{baseUrl}}"], "path": ["anomaly", "documents", ":dokumenId", "detect"], "variable": [{ "key": "dokumenId", "value": "<uuid>" }] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Market Mapping",
+      "item": [
+        {
+          "name": "Import Nasabah Target (Excel)",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/market/nasabah/import", "host": ["{{baseUrl}}"], "path": ["market", "nasabah", "import"] },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "", "description": "File Excel (.xlsx/.xls) data nasabah" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Nasabah Target",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/market/nasabah?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["market", "nasabah"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "10" }] }
+          }
+        },
+        {
+          "name": "Clear Nasabah Target",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/market/nasabah", "host": ["{{baseUrl}}"], "path": ["market", "nasabah"] }
+          }
+        },
+        {
+          "name": "Get All Kampanye",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/market/kampanye?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["market", "kampanye"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "10" }] }
+          }
+        },
+        {
+          "name": "Get Kampanye by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/market/kampanye/:id", "host": ["{{baseUrl}}"], "path": ["market", "kampanye", ":id"], "variable": [{ "key": "id", "value": "<uuid>" }] }
+          }
+        },
+        {
+          "name": "Create Kampanye",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/market/kampanye", "host": ["{{baseUrl}}"], "path": ["market", "kampanye"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"judul\": \"Promo KPR Syariah Q2 2026\",\n  \"pesanTemplate\": \"Assalamualaikum {nama}, kami menawarkan produk KPR Syariah dengan margin kompetitif. Hubungi kami di {telepon}.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Update Kampanye",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/market/kampanye/:id", "host": ["{{baseUrl}}"], "path": ["market", "kampanye", ":id"], "variable": [{ "key": "id", "value": "<uuid>" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"judul\": \"Promo KPR Syariah Q3 2026\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Delete Kampanye",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/market/kampanye/:id", "host": ["{{baseUrl}}"], "path": ["market", "kampanye", ":id"], "variable": [{ "key": "id", "value": "<uuid>" }] }
+          }
+        },
+        {
+          "name": "Blast Kampanye",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/market/kampanye/:id/blast", "host": ["{{baseUrl}}"], "path": ["market", "kampanye", ":id", "blast"], "variable": [{ "key": "id", "value": "<uuid>" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"provinsi\": \"Jawa Barat\",\n  \"kota\": \"Bandung\",\n  \"kecamatan\": \"\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Get Blast Logs",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/market/kampanye/:id/logs?page=1&limit=20", "host": ["{{baseUrl}}"], "path": ["market", "kampanye", ":id", "logs"], "variable": [{ "key": "id", "value": "<uuid>" }], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "20" }] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Document Vault",
+      "item": [
+        {
+          "name": "Compress File",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/vault/compress", "host": ["{{baseUrl}}"], "path": ["vault", "compress"] },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "", "description": "PDF to compress (max 100MB)" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Convert File",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/vault/convert", "host": ["{{baseUrl}}"], "path": ["vault", "convert"] },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "", "description": "File to convert (PDF/DOCX/XLSX/JPG/PNG)" },
+                { "key": "formatTujuan", "value": "pdf", "type": "text", "description": "Target format: pdf | docx | xlsx | jpg | png" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Processing History",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/vault/history?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["vault", "history"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "10" }] }
+          }
+        },
+        {
+          "name": "Download File Result",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/vault/history/:id/download", "host": ["{{baseUrl}}"], "path": ["vault", "history", ":id", "download"], "variable": [{ "key": "id", "value": "<uuid>" }] }
+          }
+        },
+        {
+          "name": "Delete History Entry",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/vault/history/:id", "host": ["{{baseUrl}}"], "path": ["vault", "history", ":id"], "variable": [{ "key": "id", "value": "<uuid>" }] }
+          }
+        },
+        {
+          "name": "Clear All History",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/vault/history", "host": ["{{baseUrl}}"], "path": ["vault", "history"] }
+          }
+        }
+      ]
+    }
+
+  ]
+}
