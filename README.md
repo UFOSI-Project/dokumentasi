@@ -40,3 +40,6 @@ Beberapa tanggung jawab utama IT Development dalam proyek ini:
 ## 3. Source code
 
 Berikut adalah seluruh source code yang membentuk aplikasi UFOSI:
+- Frontend: [ufosi-fe](https://github.com/UFOSI-Project/ufosi-fe)
+- Backend: [ufosi-be](https://github.com/UFOSI-Project/ufosi-be)
+- AI: [gemini-rekon](https://github.com/UFOSI-Project/gemini-rekon)
